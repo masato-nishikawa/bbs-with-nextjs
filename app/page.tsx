@@ -1,67 +1,25 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
+import BBSCardList from "./components/BBSCardList";
+import { BBSData } from "./types/types";
 
-export default function Home() {
+async function getBBSAllAData() {
+  // 絶対URLを指定する
+  const response = await fetch("http://localhost:3000/api/post", {
+    cache: "no-store",
+  });
+
+  // SSRの場合はローカルサーバーなのでターミナルを見る
+  // レスポンスが配列なので配列にする
+  const bbsAllData: BBSData[] = await response.json();
+
+  return bbsAllData;
+}
+
+// アクセス頻度が多いSSR, CSRが良いと考えられる
+export default async function Home() {
+  const bbsAllData = await getBBSAllAData();
   return (
-    <main className="grid lg:grid-cols-3 px-4 py-4 gap-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Create project</CardTitle>
-          <CardDescription>
-            Deploy your new project in one-click.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum beatae
-          dicta odio fugiat praesentium quia, corrupti dolor veniam assumenda
-          temporibus vel harum quod. In dolorum numquam ab dolore, esse
-          similique?
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Link href="/bbs-posts/1">Read More</Link>
-        </CardFooter>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Create project</CardTitle>
-          <CardDescription>
-            Deploy your new project in one-click.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum beatae
-          dicta odio fugiat praesentium quia, corrupti dolor veniam assumenda
-          temporibus vel harum quod. In dolorum numquam ab dolore, esse
-          similique?
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Link href="/bbs-posts/1">Read More</Link>
-        </CardFooter>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Create project</CardTitle>
-          <CardDescription>
-            Deploy your new project in one-click.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum beatae
-          dicta odio fugiat praesentium quia, corrupti dolor veniam assumenda
-          temporibus vel harum quod. In dolorum numquam ab dolore, esse
-          similique?
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Link href="/bbs-posts/1">Read More</Link>
-        </CardFooter>
-      </Card>
+    <main>
+      <BBSCardList bbsAllData={bbsAllData} />
     </main>
   );
 }
