@@ -2,7 +2,7 @@ import { BBSData } from "@/app/types/types";
 import Link from "next/link";
 import React from "react";
 
-async function getDetailBBSData(id: number) {
+async function getDetailBBSData(id: string) {
   const response = await fetch(`http://localhost:3000/api/post/${id}`, {
     cache: "no-store",
   });
@@ -12,13 +12,14 @@ async function getDetailBBSData(id: number) {
   return bbsDetailData;
 }
 
-const BBSDetailPage = async ({ params }: { params: { bbsId: number } }) => {
+const BBSDetailPage = async ({ params }: { params: { bbsId: string } }) => {
   const bbsDetailData = await getDetailBBSData(params.bbsId);
   const { title, content, username } = bbsDetailData;
   return (
     <div className="mx-auto max-w-4xl p-4">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">{title}</h1>
+        <p>aaaaaaaaaaaaa</p>
         <p className="text-gray-700">{username}</p>
       </div>
 

@@ -1,16 +1,23 @@
+// app/api/post/[bbsid]/route.ts
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prismaClient";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { bbsid: string } } // ←ここを bbsid に！！
+  _req: Request,
+  ctx: { params: Promise<{ bbsid: string }> } // ← Promise 型
 ) {
-  const bbsId = params.bbsid; // ←ここも合わせる
-  const bbsDetailData = await prisma.post.findUnique({
-    where: {
-      id: parseInt(bbsId),
-    },
-  });
+  const { bbsid } = await ctx.params; // ← 必ず await
+  const id = Number(bbsid);
 
-  return NextResponse.json(bbsDetailData);
+  if (!Number.isInteger(id)) {
+    return NextResponse.json({ error: "invalid id" }, { status: 400 });
+  }
+
+  const post = await prisma.post.findUnique({ where: { id } });
+
+  if (!post) {
+    return NextResponse.json({ error: "not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(post);
 }
